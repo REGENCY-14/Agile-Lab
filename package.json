@@ -1,0 +1,35 @@
+{
+  "name": "agile-lab-task-tracker",
+  "version": "1.0.0",
+  "description": "A JavaScript-based Task Tracker web application demonstrating Agile and DevOps best practices",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "jest --detectOpenHandles",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "keywords": [
+    "task-tracker",
+    "agile",
+    "devops",
+    "javascript",
+    "express",
+    "jest"
+  ],
+  "author": "Agile + DevOps Lab Team",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "jest": "^29.5.0",
+    "nodemon": "^3.0.1",
+    "supertest": "^6.3.3"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  }
+}

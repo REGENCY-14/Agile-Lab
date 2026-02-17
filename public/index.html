@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task Tracker - Agile + DevOps Lab</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>📋 Task Tracker</h1>
+      <p class="subtitle">Agile + DevOps Lab</p>
+    </header>
+
+    <!-- Input Section -->
+    <div class="input-section">
+      <div class="input-group">
+        <input 
+          type="text" 
+          id="taskInput" 
+          class="input-field" 
+          placeholder="Enter a new task..."
+          autocomplete="off"
+        >
+        <button id="addBtn" class="btn btn-primary">
+          <span class="btn-icon">➕</span> Add Task
+        </button>
+      </div>
+      <div id="inputError" class="error-message"></div>
+    </div>
+
+    <!-- Statistics Section -->
+    <div class="stats-section">
+      <div class="stat-card">
+        <div class="stat-value" id="totalTasks">0</div>
+        <div class="stat-label">Total Tasks</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="completedTasks">0</div>
+        <div class="stat-label">Completed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="pendingTasks">0</div>
+        <div class="stat-label">Pending</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="completionRate">0%</div>
+        <div class="stat-label">Completion</div>
+      </div>
+    </div>
+
+    <!-- Task List Section -->
+    <div class="task-list-section">
+      <h2>Tasks</h2>
+      <div id="tasksContainer" class="tasks-container">
+        <p class="empty-state">No tasks yet. Create one to get started! 🚀</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Task Item Template (hidden, used for cloning) -->
+  <template id="taskTemplate">
+    <div class="task-item">
+      <div class="task-content">
+        <h3 class="task-title"></h3>
+        <div class="task-meta">
+          <span class="task-status"></span>
+          <span class="task-date"></span>
+        </div>
+      </div>
+      <div class="task-actions">
+        <button class="btn btn-sm btn-success task-complete-btn" title="Mark as completed">
+          ✓ Complete
+        </button>
+        <button class="btn btn-sm btn-danger task-delete-btn" title="Delete task">
+          🗑️ Delete
+        </button>
+      </div>
+    </div>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
