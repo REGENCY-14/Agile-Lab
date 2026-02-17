@@ -19,4 +19,6 @@ module.exports = {
     },
   },
   testMatch: ['**/tests/**/*.test.js'],
+  silent: process.env.CI === 'true', // Suppress console output in CI
+  verbose: process.env.CI !== 'true', // Show verbose output locally only
 };
