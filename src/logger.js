@@ -2,6 +2,7 @@
  * Logger Module
  * 
  * Handles all application logging with support for different log levels:
+ * - DEBUG: Detailed information for debugging (only in development)
  * - INFO: General information messages
  * - WARN: Warning messages
  * - ERROR: Error messages
@@ -52,6 +53,19 @@ const writeToFile = (logMessage) => {
 };
 
 /**
+ * Log debug level messages (only in development)
+ * @param {string} context - Context/category
+ * @param {string} message - Message to log
+ */
+const debug = (context, message) => {
+  if (process.env.NODE_ENV !== 'production') {
+    const logMessage = formatLog('DEBUG', context, message);
+    console.debug(logMessage);
+    writeToFile(logMessage);
+  }
+};
+
+/**
  * Log info level messages
  * @param {string} context - Context/category (e.g., "TaskManager", "Server")
  * @param {string} message - Message to log
@@ -74,7 +88,8 @@ const warn = (context, message) => {
 };
 
 /**
- * Log error level messages
+ *debug,
+   Log error level messages
  * @param {string} context - Context/category
  * @param {string} message - Message to log
  * @param {Error} [error] - Optional error object
