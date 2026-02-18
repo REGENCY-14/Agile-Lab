@@ -12,6 +12,26 @@ const logger = require('./logger');
 let startTime = Date.now();
 
 /**
+ * Format uptime into human-readable string
+ * @param {number} seconds - Uptime in seconds
+ * @returns {string} Formatted uptime string
+ */
+const formatUptime = (seconds) => {
+  const days = Math.floor(seconds / 86400);
+  const hours = Math.floor((seconds % 86400) / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const secs = seconds % 60;
+  
+  const parts = [];
+  if (days > 0) parts.push(`${days}d`);
+  if (hours > 0) parts.push(`${hours}h`);
+  if (minutes > 0) parts.push(`${minutes}m`);
+  parts.push(`${secs}s`);
+  
+  return parts.join(' ');
+};
+
+/**
  * Reset start time (useful for testing)
  */
 const resetStartTime = () => {
@@ -26,6 +46,8 @@ const resetStartTime = () => {
  * - uptime: Server uptime in seconds
  * - timestamp: Current time in ISO format
  * - memory: Memory usage information
+ * - environment: Node.js environment details
+ * - system: System information
  * 
  * @returns {Object} Health status object
  */
@@ -41,6 +63,17 @@ const getHealthStatus = () => {
       heapUsed: Math.round(memory.heapUsed / 1024 / 1024), // MB
       heapTotal: Math.round(memory.heapTotal / 1024 / 1024), // MB
       rss: Math.round(memory.rss / 1024 / 1024), // MB
+      external: Math.round(memory.external / 1024 / 1024), // MB
+    },
+    environment: {
+      nodeVersion: process.version,
+      platform: process.platform,
+      arch: process.arch,
+      pid: process.pid,
+    },
+    system: {
+      uptimeSeconds: uptime,
+      uptimeFormatted: formatUptime(uptime),
     },
   };
 
