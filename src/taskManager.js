@@ -65,7 +65,7 @@ const createTask = (title) => {
  */
 const getTasks = () => {
   logger.info('TaskManager', `Retrieved ${tasks.length} tasks`);
-  return [...tasks]; // Return copy to prevent external mutations
+  return tasks.map(task => ({ ...task })); // Return deep copy to prevent external mutations
 };
 
 /**
