@@ -1,0 +1,53 @@
+name: Auto Assign
+
+on:
+  issues:
+    types: [opened]
+  pull_request:
+    types: [opened]
+
+jobs:
+  auto-assign:
+    name: Auto Assign Issues and PRs
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Auto assign issue
+        if: github.event_name == 'issues'
+        uses: pozil/auto-assign-issue@v1
+        with:
+          assignees: ${{ github.actor }}
+          numOfAssignee: 1
+      
+      - name: Auto assign PR to author
+        if: github.event_name == 'pull_request'
+        uses: thomaseizinger/assign-pr-creator-action@v1.0.0
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Add labels to issue
+        if: github.event_name == 'issues'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const labels = [];
+            
+            if (issue.title.toLowerCase().includes('bug')) {
+              labels.push('bug');
+            }
+            if (issue.title.toLowerCase().includes('feature')) {
+              labels.push('enhancement');
+            }
+            if (issue.title.toLowerCase().includes('test')) {
+              labels.push('testing');
+            }
+            
+            if (labels.length > 0) {
+              github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                labels: labels
+              });
+            }

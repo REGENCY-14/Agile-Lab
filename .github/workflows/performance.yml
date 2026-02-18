@@ -1,0 +1,59 @@
+name: Performance Testing
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  performance-test:
+    name: API Performance Test
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm install
+      
+      - name: Start server in background
+        run: |
+          npm start &
+          sleep 5
+          echo "Server started"
+      
+      - name: Wait for server to be ready
+        run: |
+          timeout 30 bash -c 'until curl -f http://localhost:3000/health; do sleep 1; done'
+          echo "✅ Server is ready"
+      
+      - name: Test API endpoints
+        run: |
+          echo "Testing GET /api/tasks"
+          time curl -X GET http://localhost:3000/api/tasks
+          
+          echo -e "\n\nTesting POST /api/tasks"
+          time curl -X POST http://localhost:3000/api/tasks \
+            -H "Content-Type: application/json" \
+            -d '{"title":"Performance Test Task"}'
+          
+          echo -e "\n\nTesting GET /health"
+          time curl -X GET http://localhost:3000/health
+      
+      - name: Load testing with Apache Bench
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y apache2-utils
+          echo "Running load test - 100 requests, 10 concurrent"
+          ab -n 100 -c 10 http://localhost:3000/health || true
+          ab -n 100 -c 10 http://localhost:3000/api/tasks || true
+        continue-on-error: true

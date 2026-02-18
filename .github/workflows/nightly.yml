@@ -1,0 +1,57 @@
+name: Nightly Build
+
+on:
+  schedule:
+    - cron: '0 2 * * *'  # Run at 2 AM UTC every day
+  workflow_dispatch:
+
+jobs:
+  nightly-test:
+    name: Nightly Test Suite
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x, 18.x, 20.x]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm install
+      
+      - name: Run comprehensive tests
+        run: npm test -- --coverage --detectOpenHandles --verbose
+      
+      - name: Test server startup and health
+        run: |
+          npm start &
+          sleep 5
+          curl -f http://localhost:3000/health || exit 1
+          echo "✅ Server health check passed"
+      
+      - name: Generate test report
+        if: always()
+        run: |
+          echo "## Nightly Test Results - Node ${{ matrix.node-version }}" >> $GITHUB_STEP_SUMMARY
+          echo "Build completed at $(date)" >> $GITHUB_STEP_SUMMARY
+  
+  report:
+    name: Nightly Build Report
+    needs: nightly-test
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+      - name: Generate summary
+        run: |
+          echo "🌙 Nightly build completed" >> $GITHUB_STEP_SUMMARY
+          echo "Status: ${{ needs.nightly-test.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "Timestamp: $(date)" >> $GITHUB_STEP_SUMMARY
