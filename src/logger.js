@@ -88,8 +88,7 @@ const warn = (context, message) => {
 };
 
 /**
- *debug,
-   Log error level messages
+ * Log error level messages
  * @param {string} context - Context/category
  * @param {string} message - Message to log
  * @param {Error} [error] - Optional error object
@@ -102,6 +101,7 @@ const error = (context, message, error) => {
 };
 
 module.exports = {
+  debug,
   info,
   warn,
   error,
